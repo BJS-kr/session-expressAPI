@@ -3,7 +3,7 @@ const { log } = console;
 function endpoints(routers) {
   const endpoint = routers.map(({ stack }) => stack.map(({ route }) => {
     return route && {path: '/api' + route.path, method: route.stack[0].method}
-  })).flatMap(x => x).filter(x => x);
+  })).flatMap(x => x).filter(x => !!x);
 
   endpoint.unshift({path:'/', method:'get'});
   return endpoint;

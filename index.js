@@ -3,7 +3,7 @@ const app = express();
 const useGlobalMiddleware = useErrorHandler = useRouter = app.use.bind(app);
 
 function getRouter() {
-  return require('express').Router();
+  return express.Router();
 }
 
 module.exports = {
@@ -17,10 +17,10 @@ module.exports = {
   home: app.get.bind(app),
   listen: app.listen.bind(app),
   json: express.json(),
-  useGlobalMiddleware: useGlobalMiddleware,
-  useErrorHandler: useErrorHandler,
-  useRouter,
   PORT: 9999,
+  useGlobalMiddleware,
+  useErrorHandler,
+  useRouter,
   getRouter
 }
 

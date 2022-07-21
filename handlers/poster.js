@@ -1,8 +1,4 @@
 module.exports = {
-  middlewareTest(req, res) {
-    
-  },
-
   addPost(model) {
     return async (req, res) => {
       const { subject, description, arrivedAt } = req.body;

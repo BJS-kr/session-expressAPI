@@ -2,9 +2,9 @@ const { PATH, poster, middleware, postModel } = require('../index');
 
 module.exports = function (router) {
   router.post(
-  PATH.POST, 
-  middleware.timeOfArrival, 
-  poster.addPost(postModel)
+    PATH.POST, 
+    middleware.timeOfArrival, 
+    poster.addPost(postModel)
   );
 
   router.get(

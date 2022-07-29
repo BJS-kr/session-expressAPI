@@ -5,8 +5,8 @@ function getPartsValue(JWTStructure) {
   return [JWTStructure.structure.Head, JWTStructure.structure.Body, JWTStructure.structure.Tail];
 }
 
-function doubleMap(arr_1, arr_2, fn) {
-  if (arr_1.length !== arr_2.length) throw new Error('doubleMap must called on two arrays with same length');
+function doubleForEach(arr_1, arr_2, fn) {
+  if (arr_1.length !== arr_2.length) throw new Error('doubleForEach must called on two arrays with same length');
 
   for (let i = 0; i < arr_1.length; i++) {
     fn([arr_1[i], arr_2[i]], i);
@@ -25,21 +25,21 @@ function makeJWTStructure(jwt, name) {
 }
 
 function generateCompareString(length1, length2) {
- return `${WHITE + length1} ${length1 === length2 ? YELLOW + '==' : MAGENTA + '!='} ${WHITE + length2}`
+ return `${WHITE + length1} ${length1 === length2 ? YELLOW + '==' : MAGENTA + '!='} ${WHITE + length2}`;
 }
 
 function compareLength(firstJWT, secondJWT) {
   const [firstJWTLengths, secondJWTLengths] = [getPartsValue(firstJWT).map(x => x.length), getPartsValue(secondJWT).map(x => x.length)];
 
-  doubleMap(firstJWTLengths, secondJWTLengths, (curr, i) => {
-    console.log(BLUE, `${parts[i]} length comparison: `, generateCompareString(...curr))
+  doubleForEach(firstJWTLengths, secondJWTLengths, (curr, i) => {
+    console.log(BLUE, `${parts[i]} length comparison: `, generateCompareString(...curr));
   })
 }
 
 function compareEquality(firstJWT, secondJWT) {
   const [firstJWTValues, secondJWTValues] = [getPartsValue(firstJWT), getPartsValue(secondJWT)];
 
-  doubleMap(firstJWTValues, secondJWTValues, (curr, i) => {
+  doubleForEach(firstJWTValues, secondJWTValues, (curr, i) => {
     console.log(` ${parts[i]} equal: `, curr[0] == curr[1]);
   });
 }
@@ -51,7 +51,7 @@ function instruct(firstJWT, secondJWT) {
     isSameLength !== isEqual && instructions.push(`${RED}> ${key} lengths ${ isSameLength ? 'matches' : 'not matches'} but equality is ${isEqual} <`);
 
     return instructions;
-    }, []).forEach(instruction => console.log(instruction))
+    }, []).forEach(instruction => console.log(instruction));
 }
 
 function showAndCompare(firstJWT, secondJWT) {

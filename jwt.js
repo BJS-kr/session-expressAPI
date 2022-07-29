@@ -1,4 +1,4 @@
-const [YELLOW, BLUE, MAGENTA, WHITE, RED] = ["\x1b[33m", "\x1b[35m", "\x1b[37m", "\x1b[31m"];
+const [YELLOW, BLUE, MAGENTA, WHITE, RED] = ["\x1b[33m", "\x1b[34m", "\x1b[35m", "\x1b[37m", "\x1b[31m"];
 const parts = ['Head', 'Body', 'Tail'];
 
 function getPartsValue(JWTStructure) {
@@ -15,10 +15,7 @@ function doubleMap(arr_1, arr_2, fn) {
 
 function makeJWTStructure(jwt, name) {
   return jwt.split('.').reduce((jwtObj, curr, i) => {
-    i === 0 && (jwtObj.structure.Head = curr);
-    i === 1 && (jwtObj.structure.Body = curr);
-    i === 2 && (jwtObj.structure.Tail = curr);
-
+    jwtObj.structure[parts[i]] = curr;
     return jwtObj;
   }, {
     original: jwt,
@@ -68,7 +65,7 @@ function showAndCompare(firstJWT, secondJWT) {
 
 const jwt = require('jsonwebtoken');
 
-const withPayload = makeJWTStructure(jwt.sign({session:'HangHae99_JWT'}, 'secret', ), 'wPayload');
+const withPayload = makeJWTStructure(jwt.sign({ session:'HangHae99_JWT' }, 'secret'), 'wPayload');
 const withoutPayload = makeJWTStructure(jwt.sign({}, 'secret'), 'woPayload');
 
 showAndCompare(withPayload, withoutPayload);

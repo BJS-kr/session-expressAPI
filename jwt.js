@@ -36,6 +36,7 @@ function makeJWTStructure(name, payload, secretOrPrivateKey, options) {
       copied.name = name;
       Object.keys(obj).forEach((key) => (copied.parts[key] = obj[key]));
       copied.original = getPartsValue(copied).join('.');
+      copied.modify = this.modify;
       return copied;
     },
     secretOrPrivateKey,
@@ -50,7 +51,7 @@ function makeJWTStructure(name, payload, secretOrPrivateKey, options) {
 
 function generateCompareString(length1, length2) {
   return `${WHITE + length1} ${
-    length1 === length2 ? YELLOW + '==' : MAGENTA + '!='
+    length1 === length2 ? YELLOW + '==' : RED + '!='
   } ${WHITE + length2}`;
 }
 

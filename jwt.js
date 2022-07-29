@@ -5,8 +5,13 @@ const WHITE = "\x1b[37m";
 const RED = "\x1b[31m";
 const parts = ['Head', 'Body', 'Tail'];
 
+function getPartsValue(JWTStructure) {
+  return [JWTStructure.structure.Head, JWTStructure.structure.Body, JWTStructure.structure.Tail];
+}
+
 function doubleMap(arr_1, arr_2, fn) {
   if (arr_1.length !== arr_2.length) throw new Error('doubleMap must called on two arrays with same length');
+
   for (let i = 0; i < arr_1.length; i++) {
     fn([arr_1[i], arr_2[i]], i);
   }
@@ -14,9 +19,9 @@ function doubleMap(arr_1, arr_2, fn) {
 
 function makeJWTStructure(jwt, name) {
   return jwt.split('.').reduce((jwtObj, curr, i) => {
-    i === 0 && (jwtObj.structure.head = curr);
-    i === 1 && (jwtObj.structure.body = curr);
-    i === 2 && (jwtObj.structure.tail = curr);
+    i === 0 && (jwtObj.structure.Head = curr);
+    i === 1 && (jwtObj.structure.Body = curr);
+    i === 2 && (jwtObj.structure.Tail = curr);
 
     return jwtObj;
   }, {
@@ -31,11 +36,7 @@ function generateCompareString(length1, length2) {
 }
 
 function compareLength(firstJWT, secondJWT) {
-  const { structure:{ head: FH, body: FB, tail: FT } } = firstJWT;
-  const { structure:{ head: SH, body: SB, tail: ST } } = secondJWT;
-
-  const firstJWTLengths = [firstJWT.original.length, FH.length, FB.length, FT.length];
-  const secondJWTLengths = [secondJWT.original.length, SH.length, SB.length, ST.length];
+  const [firstJWTLengths, secondJWTLengths] = [getPartsValue(firstJWT).map(x => x.length), getPartsValue(secondJWT).map(x => x.length)];
 
   doubleMap(firstJWTLengths, secondJWTLengths, (curr, i) => {
     console.log(BLUE, `${parts[i]} length comparison: `, generateCompareString(...curr))
@@ -43,9 +44,8 @@ function compareLength(firstJWT, secondJWT) {
 }
 
 function compareEquality(firstJWT, secondJWT) {
-  const firstJWTValues = [firstJWT.structure.head, firstJWT.structure.body, firstJWT.structure.tail];
-  const secondJWTValues = [secondJWT.structure.head, secondJWT.structure.body,secondJWT.structure.tail];
-
+  const [firstJWTValues, secondJWTValues] = [getPartsValue(firstJWT), getPartsValue(secondJWT)];
+  
   doubleMap(firstJWTValues, secondJWTValues, (curr, i) => {
     console.log(` ${parts[i]} equal: `, curr[0] == curr[1]);
   });

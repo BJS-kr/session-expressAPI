@@ -1,8 +1,4 @@
-const YELLOW = "\x1b[33m";
-const BLUE= "\x1b[34m";
-const MAGENTA = "\x1b[35m";
-const WHITE = "\x1b[37m";
-const RED = "\x1b[31m";
+const [YELLOW, BLUE, MAGENTA, WHITE, RED] = ["\x1b[33m", "\x1b[35m", "\x1b[37m", "\x1b[31m"];
 const parts = ['Head', 'Body', 'Tail'];
 
 function getPartsValue(JWTStructure) {
@@ -45,7 +41,7 @@ function compareLength(firstJWT, secondJWT) {
 
 function compareEquality(firstJWT, secondJWT) {
   const [firstJWTValues, secondJWTValues] = [getPartsValue(firstJWT), getPartsValue(secondJWT)];
-  
+
   doubleMap(firstJWTValues, secondJWTValues, (curr, i) => {
     console.log(` ${parts[i]} equal: `, curr[0] == curr[1]);
   });

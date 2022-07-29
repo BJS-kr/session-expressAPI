@@ -48,8 +48,6 @@ function instruct(firstJWT, secondJWT) {
 
   return instructions
   }, []).forEach(instruction => console.log(instruction))
-
-  
 }
 
 function showAndCompare(firstJWT, secondJWT) {

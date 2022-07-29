@@ -11,9 +11,9 @@ const parts = ['Head', 'Body', 'Tail'];
 
 function getPartsValue(JWTStructure) {
   return [
-    JWTStructure.structure.Head,
-    JWTStructure.structure.Body,
-    JWTStructure.structure.Tail,
+    JWTStructure.parts.Head,
+    JWTStructure.parts.Body,
+    JWTStructure.parts.Tail,
   ];
 }
 
@@ -21,9 +21,9 @@ function doubleForEach(arr_1, arr_2, fn) {
   if (arr_1.length !== arr_2.length)
     throw new Error('doubleForEach must called on two arrays with same length');
 
-  for (let i = 0; i < arr_1.length; i++) {
-    fn([arr_1[i], arr_2[i]], i);
-  }
+  arr_1.forEach((x, i) => {
+    fn([x, arr_2[i]], i);
+  });
 }
 
 function makeJWTStructure(name, payload, secretOrPrivateKey, options) {
@@ -34,16 +34,16 @@ function makeJWTStructure(name, payload, secretOrPrivateKey, options) {
     modify(obj, name) {
       const copied = JSON.parse(JSON.stringify(this));
       copied.name = name;
-      Object.keys(obj).forEach((key) => (copied.structure[key] = obj[key]));
+      Object.keys(obj).forEach((key) => (copied.parts[key] = obj[key]));
       copied.original = getPartsValue(copied).join('.');
       return copied;
     },
     secretOrPrivateKey,
-    structure: {},
+    parts: {},
   };
 
   return JWT.split('.').reduce((jwtObj, curr, i) => {
-    jwtObj.structure[parts[i]] = curr;
+    jwtObj.parts[parts[i]] = curr;
     return jwtObj;
   }, base);
 }
@@ -83,8 +83,8 @@ function compareEquality(firstJWT, secondJWT) {
 function instruct(firstJWT, secondJWT) {
   const possiblyEmptyInstructions = parts.reduce((instructions, key) => {
     const isSameLength =
-      firstJWT.structure[key].length == secondJWT.structure[key].length;
-    const isEqual = firstJWT.structure[key] == secondJWT.structure[key];
+      firstJWT.parts[key].length == secondJWT.parts[key].length;
+    const isEqual = firstJWT.parts[key] == secondJWT.parts[key];
     isSameLength !== isEqual &&
       instructions.push(
         `${RED}> ${key} lengths ${

@@ -4,6 +4,13 @@ const MAGENTA = "\x1b[35m";
 const WHITE = "\x1b[37m";
 const RED = "\x1b[31m";
 
+function doubleMap(arr_1, arr_2, fn) {
+  if (arr_1.length !== arr_2.length) throw new Error('doubleMap must called on two arrays with same length');
+  for (let i = 0; i < arr_1.length; i++) {
+    fn([arr_1[i], arr_2[i]], i);
+  }
+}
+
 function makeJWTStructure(jwt, name) {
   return jwt.split('.').reduce((jwtObj, curr, i) => {
     i === 0 && (jwtObj.structure.head = curr);
@@ -23,31 +30,36 @@ function generateCompareString(length1, length2) {
 }
 
 function compareLength(firstJWT, secondJWT) {
-  const { structure:{ head:FH, body:FB, tail:FT } } = firstJWT;
-  const { structure:{ head:SH, body:SB, tail:ST } } = secondJWT;
+  const { structure:{ head: FH, body: FB, tail: FT } } = firstJWT;
+  const { structure:{ head: SH, body: SB, tail: ST } } = secondJWT;
 
-  const [FTTL, FHL, FBL, FTL] = [firstJWT.original.length, FH.length, FB.length, FT.length];
-  const [STTL, SHL, SBL, STL] = [secondJWT.original.length, SH.length, SB.length, ST.length];
-  console.log(BLUE,'Total length comparison: ', generateCompareString(FTTL, STTL));
-  console.log(BLUE, 'Head length comparison: ', generateCompareString(FHL, SHL));
-  console.log(BLUE, 'Body length comparison: ', generateCompareString(FBL, SBL));
-  console.log(BLUE, 'Tail length comparison: ', generateCompareString(FTL, STL));
+  const firstJWTLengths = [firstJWT.original.length, FH.length, FB.length, FT.length];
+  const secondJWTLengths = [secondJWT.original.length, SH.length, SB.length, ST.length];
+  const parts = ['Total', 'Head', 'Body', 'Tail'];
+
+  doubleMap(firstJWTLengths, secondJWTLengths, (curr, i) => {
+    console.log(BLUE, `${parts[i]} length comparison: `, generateCompareString(...curr))
+  })
 }
 
 function compareEquality(firstJWT, secondJWT) {
-  console.log(' Head equal: ', firstJWT.structure.head == secondJWT.structure.head);
-  console.log(' Body equal: ', firstJWT.structure.body == secondJWT.structure.body);
-  console.log(' Tail equal: ', firstJWT.structure.tail == secondJWT.structure.tail);
+  const firstJWTValues = [firstJWT.structure.head, firstJWT.structure.body, firstJWT.structure.tail];
+  const secondJWTValues = [secondJWT.structure.head, secondJWT.structure.body,secondJWT.structure.tail];
+  const parts = ['Head', 'Body', 'Tail'];
+
+  doubleMap(firstJWTValues, secondJWTValues, (curr, i) => {
+    console.log(` ${parts[i]} equal: `, curr[0] == curr[1]);
+  });
 }
 
 function instruct(firstJWT, secondJWT) {
-['head', 'body', 'tail'].reduce((instructions, key) => {
-  const isSameLength = firstJWT.structure[key].length == secondJWT.structure[key].length;
-  const isEqual = firstJWT.structure[key] == secondJWT.structure[key];
-  isSameLength !== isEqual && instructions.push(`${RED}> ${key} lengths ${ isSameLength ? 'matches' : 'not matches'} but equality is ${isEqual} <`);
+  ['head', 'body', 'tail'].reduce((instructions, key) => {
+    const isSameLength = firstJWT.structure[key].length == secondJWT.structure[key].length;
+    const isEqual = firstJWT.structure[key] == secondJWT.structure[key];
+    isSameLength !== isEqual && instructions.push(`${RED}> ${key} lengths ${ isSameLength ? 'matches' : 'not matches'} but equality is ${isEqual} <`);
 
-  return instructions
-  }, []).forEach(instruction => console.log(instruction))
+    return instructions;
+    }, []).forEach(instruction => console.log(instruction))
 }
 
 function showAndCompare(firstJWT, secondJWT) {

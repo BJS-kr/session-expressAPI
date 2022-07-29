@@ -108,7 +108,7 @@ function decoded(decode, jwt) {
   try {
     return decode(jwt);
   } catch (e) {
-    return e;
+    return e.message;
   }
 }
 
@@ -116,29 +116,30 @@ function verified(verify, jwt, secretOrPrivateKey) {
   try {
     return verify(jwt, secretOrPrivateKey);
   } catch (e) {
-    return e;
+    return e.message;
   }
 }
 
-function showInformation(JWTStructure) {
-  console.log(WHITE);
-  console.log(`${JWTStructure.name}:\n`, JWTStructure.structure);
-  console.log(CYAN, 'decoded: ', decoded(jwt.decode, JWTStructure.original));
-  console.log(
-    CYAN,
-    'verified: ',
-    verified(
-      jwt.verify,
-      JWTStructure.original,
-      JWTStructure.secretOrPrivateKey
-    ),
-    '\n'
-  );
+function showInformation(firstJWT, secondJWT) {
+  [firstJWT, secondJWT].forEach((JWTStructure) => {
+    console.log(WHITE);
+    console.log(`${JWTStructure.name}:\n`, JWTStructure.structure);
+    console.log(CYAN, 'decoded: ', decoded(jwt.decode, JWTStructure.original));
+    console.log(
+      CYAN,
+      'verified: ',
+      verified(
+        jwt.verify,
+        JWTStructure.original,
+        JWTStructure.secretOrPrivateKey
+      ),
+      '\n'
+    );
+  });
 }
 
 function showAndCompare(firstJWT, secondJWT) {
-  showInformation(firstJWT);
-  showInformation(secondJWT);
+  showInformation(firstJWT, secondJWT);
   compareLength(firstJWT, secondJWT);
   compareEquality(firstJWT, secondJWT);
   instruct(firstJWT, secondJWT);
@@ -187,6 +188,7 @@ const noExpiration = makeJWTStructure(
   { session: 'HangHae99_JWT' },
   'secret'
 );
+
 showAndCompare(withPayload, withoutPayload);
 showAndCompare(secret_1, secret_2);
 showAndCompare(same_1, same_2);

@@ -26,14 +26,16 @@ function doubleForEach(arr_1, arr_2, fn) {
   }
 }
 
-function makeJWTStructure(jwt, name = 'jwt') {
-  return jwt.split('.').reduce(
+function makeJWTStructure(name, payload, secretOrPrivateKey, options) {
+  const JWT = jwt.sign(payload, secretOrPrivateKey, options);
+
+  return JWT.split('.').reduce(
     (jwtObj, curr, i) => {
       jwtObj.structure[parts[i]] = curr;
       return jwtObj;
     },
     {
-      original: jwt,
+      original: JWT,
       name,
       modify(obj, name) {
         const copied = JSON.parse(JSON.stringify(this));
@@ -42,6 +44,7 @@ function makeJWTStructure(jwt, name = 'jwt') {
         copied.original = getPartsValue(copied).join('.');
         return copied;
       },
+      secretOrPrivateKey,
       structure: {},
     }
   );
@@ -109,9 +112,9 @@ function decoded(decode, jwt) {
   }
 }
 
-function verified(verify, jwt) {
+function verified(verify, jwt, secretOrPrivateKey) {
   try {
-    return verify(jwt, 'secret');
+    return verify(jwt, secretOrPrivateKey);
   } catch (e) {
     return e;
   }
@@ -124,7 +127,11 @@ function showInformation(JWTStructure) {
   console.log(
     CYAN,
     'verified: ',
-    verified(jwt.verify, JWTStructure.original),
+    verified(
+      jwt.verify,
+      JWTStructure.original,
+      JWTStructure.secretOrPrivateKey
+    ),
     '\n'
   );
 }
@@ -138,54 +145,47 @@ function showAndCompare(firstJWT, secondJWT) {
 }
 
 const withPayload = makeJWTStructure(
-  jwt.sign({ session: 'HangHae99_JWT' }, 'secret'),
-  'w_payload'
+  'w_payload',
+  { session: 'HangHae99_JWT' },
+  'secret'
 );
-const withoutPayload = makeJWTStructure(jwt.sign({}, 'secret'), 'wo_payload');
+const withoutPayload = makeJWTStructure('wo_payload', {}, 'secret');
 
-const secret_1 = makeJWTStructure(jwt.sign({}, 'secret'), 'secret_1');
-const secret_2 = makeJWTStructure(
-  jwt.sign({}, 'anotherLongerSecret'),
-  'secret_2'
-);
+const secret_1 = makeJWTStructure('secret_1', {}, 'secret');
+const secret_2 = makeJWTStructure('secret_2', {}, 'anotherLongerSecret');
 
-const same_1 = makeJWTStructure(jwt.sign({}, 'secret'), 'same1');
-const same_2 = makeJWTStructure(jwt.sign({}, 'secret'), 'same2');
+const same_1 = makeJWTStructure('same1', {}, 'secret');
+const same_2 = makeJWTStructure('same2', {}, 'secret');
 
-const sameExpiration_1 = makeJWTStructure(
-  jwt.sign({}, 'secret', { expiresIn: 10 }),
-  'same_exp_1'
-);
-const sameExpiration_2 = makeJWTStructure(
-  jwt.sign({}, 'secret', { expiresIn: 10 }),
-  'same_exp_2'
-);
+const sameExpiration_1 = makeJWTStructure('same_exp_1', {}, 'secret', {
+  expiresIn: 10,
+});
+const sameExpiration_2 = makeJWTStructure('same_exp_2', {}, 'secret', {
+  expiresIn: 10,
+});
 
-const expiration_1 = makeJWTStructure(
-  jwt.sign({}, 'secret', { expiresIn: 10 }),
-  'exp_1'
-);
-const expiration_2 = makeJWTStructure(
-  jwt.sign({}, 'secret', { expiresIn: 100 }),
-  'exp_2'
-);
+const expiration_1 = makeJWTStructure('exp_1', {}, 'secret', { expiresIn: 10 });
+const expiration_2 = makeJWTStructure('exp_2', {}, 'secret', {
+  expiresIn: 100,
+});
 
-const algorithm_1 = makeJWTStructure(
-  jwt.sign({}, 'secret', { algorithm: 'HS256' }),
-  'alg_1'
-);
-const algorithm_2 = makeJWTStructure(
-  jwt.sign({}, 'secret', { algorithm: 'HS512' }),
-  'alg_2'
-);
+const algorithm_1 = makeJWTStructure('alg_1', {}, 'secret', {
+  algorithm: 'HS256',
+});
+const algorithm_2 = makeJWTStructure('alg_2', {}, 'secret', {
+  algorithm: 'HS512',
+});
 
 const immediateExpiration = makeJWTStructure(
-  jwt.sign({ session: 'HangHae99_JWT' }, 'secret', { expiresIn: 0 }),
-  'original'
+  'immediate_expiration',
+  { session: 'HangHae99_JWT' },
+  'secret',
+  { expiresIn: 0 }
 );
 const noExpiration = makeJWTStructure(
-  jwt.sign({ session: 'HangHae99_JWT' }, 'secret'),
-  'original'
+  'no_expiration',
+  { session: 'HangHae99_JWT' },
+  'secret'
 );
 showAndCompare(withPayload, withoutPayload);
 showAndCompare(secret_1, secret_2);

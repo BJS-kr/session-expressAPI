@@ -56,9 +56,7 @@ function showAndCompare(firstJWT, secondJWT) {
   console.log(`${firstJWT.name}:\n`, firstJWT.structure,'\n');
   console.log(`${secondJWT.name}:\n`, secondJWT.structure,'\n');
   compareLength(firstJWT, secondJWT);
-
   compareEquality(firstJWT, secondJWT);
-
   instruct(firstJWT, secondJWT);
 }
 

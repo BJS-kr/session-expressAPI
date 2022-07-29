@@ -148,8 +148,12 @@ function showAndCompare(firstJWT, secondJWT) {
 const withPayload = makeJWTStructure(
   'w_payload',
   { session: 'HangHae99_JWT' },
-  'secret'
+  'secret',
+  { expiresIn: 200, algorithm: 'HS512' }
 );
-const withoutPayload = makeJWTStructure('wo_payload', {}, 'secret');
+const withoutPayload = makeJWTStructure('wo_payload', {}, 'secret', {
+  expiresIn: 200,
+  algorithm: 'HS256',
+});
 
 showAndCompare(withPayload, withoutPayload);

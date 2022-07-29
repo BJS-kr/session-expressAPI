@@ -152,47 +152,4 @@ const withPayload = makeJWTStructure(
 );
 const withoutPayload = makeJWTStructure('wo_payload', {}, 'secret');
 
-const secret_1 = makeJWTStructure('secret_1', {}, 'secret');
-const secret_2 = makeJWTStructure('secret_2', {}, 'anotherLongerSecret');
-
-const same_1 = makeJWTStructure('same1', {}, 'secret');
-const same_2 = makeJWTStructure('same2', {}, 'secret');
-
-const sameExpiration_1 = makeJWTStructure('same_exp_1', {}, 'secret', {
-  expiresIn: 10,
-});
-const sameExpiration_2 = makeJWTStructure('same_exp_2', {}, 'secret', {
-  expiresIn: 10,
-});
-
-const expiration_1 = makeJWTStructure('exp_1', {}, 'secret', { expiresIn: 10 });
-const expiration_2 = makeJWTStructure('exp_2', {}, 'secret', {
-  expiresIn: 100,
-});
-
-const algorithm_1 = makeJWTStructure('alg_1', {}, 'secret', {
-  algorithm: 'HS256',
-});
-const algorithm_2 = makeJWTStructure('alg_2', {}, 'secret', {
-  algorithm: 'HS512',
-});
-
-const immediateExpiration = makeJWTStructure(
-  'immediate_expiration',
-  { session: 'HangHae99_JWT' },
-  'secret',
-  { expiresIn: 0 }
-);
-const noExpiration = makeJWTStructure(
-  'no_expiration',
-  { session: 'HangHae99_JWT' },
-  'secret'
-);
-
 showAndCompare(withPayload, withoutPayload);
-showAndCompare(secret_1, secret_2);
-showAndCompare(same_1, same_2);
-showAndCompare(sameExpiration_1, sameExpiration_2);
-showAndCompare(expiration_1, expiration_2);
-showAndCompare(algorithm_1, algorithm_2);
-showAndCompare(immediateExpiration, noExpiration);

@@ -120,18 +120,24 @@ function verified(verify, jwt, secretOrPrivateKey) {
 
 function showInformation(firstJWT, secondJWT) {
   [firstJWT, secondJWT].forEach((JWTStructure) => {
-    console.log(WHITE);
-    console.log(`${JWTStructure.name}:\n`, JWTStructure.structure);
-    console.log(CYAN, 'decoded: ', decoded(jwt.decode, JWTStructure.original));
-    console.log(
-      CYAN,
-      'verified: ',
+    const decodedStringified = JSON.stringify(
+      decoded(jwt.decode, JWTStructure.original)
+    );
+
+    const verifiedStringified = JSON.stringify(
       verified(
         jwt.verify,
         JWTStructure.original,
         JWTStructure.secretOrPrivateKey
-      ),
-      '\n'
+      )
+    );
+
+    const headBodyTail = getPartsValue(JWTStructure)
+      .map((x, i) => MAGENTA + parts[i] + ': ' + x)
+      .join('\n');
+
+    console.log(
+      `${WHITE}${JWTStructure.name}:\n${headBodyTail}\n${CYAN}decoded: ${decodedStringified}\n${CYAN}verified: ${verifiedStringified}\n`
     );
   });
 }

@@ -1,17 +1,27 @@
-module.exports = {
-  global: (request, response, next) => {
-    response.locals.globalMiddlewareProp = 'string from global middleware'
-    next();
-  },
+const { validateAccessToken, thrower } = require('..');
 
-  inRouter: (request, response, next) => {
-    response.locals.middlewareProp = 'hi! hello!';
+module.exports = {
+  global(req, res, next) {
+    response.locals.globalMiddlewareProp = 'string from global middleware'
     next();
   },
 
   timeOfArrival:(req, res, next) => {
     req.body.arrivedAt = Date.now();
     next();
+  },
+
+  validator(req, res, next) {
+    const [authType, accessToken] = req.headers.authorization.split(' ');
+    try {
+     authType === 'Bearer' 
+     ? validateAccessToken(accessToken) 
+     : thrower({ message: 'Auth type is not Bearer'})
+     next();
+    } catch(e) {
+      console.error(e);
+      res.sendStatus(400);
+    }
   }
 }
 

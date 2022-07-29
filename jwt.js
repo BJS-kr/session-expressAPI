@@ -28,26 +28,24 @@ function doubleForEach(arr_1, arr_2, fn) {
 
 function makeJWTStructure(name, payload, secretOrPrivateKey, options) {
   const JWT = jwt.sign(payload, secretOrPrivateKey, options);
-
-  return JWT.split('.').reduce(
-    (jwtObj, curr, i) => {
-      jwtObj.structure[parts[i]] = curr;
-      return jwtObj;
+  const base = {
+    original: JWT,
+    name,
+    modify(obj, name) {
+      const copied = JSON.parse(JSON.stringify(this));
+      copied.name = name;
+      Object.keys(obj).forEach((key) => (copied.structure[key] = obj[key]));
+      copied.original = getPartsValue(copied).join('.');
+      return copied;
     },
-    {
-      original: JWT,
-      name,
-      modify(obj, name) {
-        const copied = JSON.parse(JSON.stringify(this));
-        copied.name = name;
-        Object.keys(obj).forEach((key) => (copied.structure[key] = obj[key]));
-        copied.original = getPartsValue(copied).join('.');
-        return copied;
-      },
-      secretOrPrivateKey,
-      structure: {},
-    }
-  );
+    secretOrPrivateKey,
+    structure: {},
+  };
+
+  return JWT.split('.').reduce((jwtObj, curr, i) => {
+    jwtObj.structure[parts[i]] = curr;
+    return jwtObj;
+  }, base);
 }
 
 function generateCompareString(length1, length2) {

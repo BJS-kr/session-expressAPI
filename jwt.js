@@ -153,5 +153,27 @@ const withoutPayload = makeJWTStructure('wo_payload', {}, 'secret', {
   expiresIn: 200,
   algorithm: 'HS256',
 });
+const original = makeJWTStructure('original', { name: 'HangHae' }, 'secret');
+const [oHead, oBody, oTail] = getPartsValue(original);
+const headModified = original.modify(
+  {
+    Head: oHead.slice(0, oHead.length - 3),
+  },
+  'head_modified'
+);
+const bodyModified = original.modify(
+  {
+    Body: oBody.slice(0, oBody.length - 3),
+  },
+  'body_modified'
+);
+const tailModified = original.modify(
+  {
+    Tail: oTail.slice(0, oTail.length - 3),
+  },
+  'tail_modified'
+);
 
 showAndCompare(withPayload, withoutPayload);
+showAndCompare(original, headModified);
+showAndCompare(bodyModified, tailModified);

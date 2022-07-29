@@ -3,6 +3,7 @@ const BLUE= "\x1b[34m";
 const MAGENTA = "\x1b[35m";
 const WHITE = "\x1b[37m";
 const RED = "\x1b[31m";
+const parts = ['Head', 'Body', 'Tail'];
 
 function doubleMap(arr_1, arr_2, fn) {
   if (arr_1.length !== arr_2.length) throw new Error('doubleMap must called on two arrays with same length');
@@ -35,7 +36,6 @@ function compareLength(firstJWT, secondJWT) {
 
   const firstJWTLengths = [firstJWT.original.length, FH.length, FB.length, FT.length];
   const secondJWTLengths = [secondJWT.original.length, SH.length, SB.length, ST.length];
-  const parts = ['Total', 'Head', 'Body', 'Tail'];
 
   doubleMap(firstJWTLengths, secondJWTLengths, (curr, i) => {
     console.log(BLUE, `${parts[i]} length comparison: `, generateCompareString(...curr))
@@ -45,7 +45,6 @@ function compareLength(firstJWT, secondJWT) {
 function compareEquality(firstJWT, secondJWT) {
   const firstJWTValues = [firstJWT.structure.head, firstJWT.structure.body, firstJWT.structure.tail];
   const secondJWTValues = [secondJWT.structure.head, secondJWT.structure.body,secondJWT.structure.tail];
-  const parts = ['Head', 'Body', 'Tail'];
 
   doubleMap(firstJWTValues, secondJWTValues, (curr, i) => {
     console.log(` ${parts[i]} equal: `, curr[0] == curr[1]);
@@ -53,7 +52,7 @@ function compareEquality(firstJWT, secondJWT) {
 }
 
 function instruct(firstJWT, secondJWT) {
-  ['head', 'body', 'tail'].reduce((instructions, key) => {
+  parts.reduce((instructions, key) => {
     const isSameLength = firstJWT.structure[key].length == secondJWT.structure[key].length;
     const isEqual = firstJWT.structure[key] == secondJWT.structure[key];
     isSameLength !== isEqual && instructions.push(`${RED}> ${key} lengths ${ isSameLength ? 'matches' : 'not matches'} but equality is ${isEqual} <`);

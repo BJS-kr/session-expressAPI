@@ -7,13 +7,13 @@ const [YELLOW, BLUE, MAGENTA, WHITE, RED, CYAN] = [
   '\x1b[31m',
   '\x1b[36m',
 ];
-const parts = ['Head', 'Body', 'Tail'];
+const parts = ['Header', 'Payload', 'Signature'];
 
 function getPartsValue(JWTStructure) {
   return [
-    JWTStructure.parts.Head,
-    JWTStructure.parts.Body,
-    JWTStructure.parts.Tail,
+    JWTStructure.parts.Header,
+    JWTStructure.parts.Payload,
+    JWTStructure.parts.Signature,
   ];
 }
 
@@ -133,12 +133,12 @@ function showInformation(firstJWT, secondJWT) {
       )
     );
 
-    const headBodyTail = getPartsValue(JWTStructure)
+    const headerPayloadSignature = getPartsValue(JWTStructure)
       .map((x, i) => MAGENTA + parts[i] + ': ' + x)
       .join('\n');
 
     console.log(
-      `${WHITE}${JWTStructure.name}:\n${headBodyTail}\n${CYAN}decoded: ${decodedStringified}\n${CYAN}verified: ${verifiedStringified}\n`
+      `${WHITE}${JWTStructure.name}:\n${headerPayloadSignature}\n${CYAN}decoded: ${decodedStringified}\n${CYAN}verified: ${verifiedStringified}\n`
     );
   });
 }
@@ -161,26 +161,37 @@ const withoutPayload = makeJWTStructure('wo_payload', {}, 'secret', {
   algorithm: 'HS256',
 });
 const original = makeJWTStructure('original', { name: 'HangHae' }, 'secret');
-const [oHead, oBody, oTail] = getPartsValue(original);
-const headModified = original.modify(
+const [oHeader, oPayload, oSignature] = getPartsValue(original);
+const headerModified = original.modify(
   {
-    Head: oHead.slice(0, oHead.length - 3),
+    Header: oHeader.slice(0, oHeader.length - 3),
   },
-  'head_modified'
+  'header_modified'
 );
-const bodyModified = original.modify(
+const payloadModified = original.modify(
   {
-    Body: oBody.slice(0, oBody.length - 3),
+    Payload: oPayload.slice(0, oPayload.length - 3),
   },
-  'body_modified'
+  'payload_modified'
 );
-const tailModified = original.modify(
+const signatureModified = original.modify(
   {
-    Tail: oTail.slice(0, oTail.length - 3),
+    Signature: oSignature.slice(0, oSignature.length - 3),
   },
-  'tail_modified'
+  'signature_modified'
 );
 
 showAndCompare(withPayload, withoutPayload);
-showAndCompare(original, headModified);
-showAndCompare(bodyModified, tailModified);
+showAndCompare(original, headerModified);
+showAndCompare(payloadModified, signatureModified);
+
+str = '4h';
+
+console.log(
+  str +
+    ': ' +
+    str.length +
+    ' characters, ' +
+    Buffer.byteLength(str, 'utf8') +
+    ' bytes'
+);

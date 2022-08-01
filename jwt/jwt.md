@@ -25,7 +25,6 @@ symmetric한 encryption에는 secret key라는 말을 사용하고, asymmetric�
 오해하면 안되는 것이 있습니다. SHA-256정도면 충분히 안전하다고 여겨진다고 언급했는데, 이는 상황이 단순한 sign이기 때문입니다. 컴퓨터 성능의 증가와 병렬처리 기술의 발전(특히, GPU를 이용한 brute force)에 따라, SHA 알고리즘은 취약성이 크게 증대되었습니다. [혹자는 SHA-1과 SHA-512도 큰 차이가 없다고 판단](https://security.stackexchange.com/questions/52041/is-using-sha-512-for-storing-passwords-tolerable) 할 정도입니다. 상황에 따라 안전하고 안전하지 않고는 달라진다는 것을 고려하시기 바랍니다.
 
 [간단한 SHA-1과 SHA-2의 차이](https://www.geeksforgeeks.org/difference-between-sha1-and-sha2/)도 궁금하시면 살펴보시기 바랍니다.
-
 # JWT, JWS, JWE, JWA, JWK의 차이점
 먼저, JWT는 사실 JWS 혹은 JWE를 합쳐 부르는 것입니다. JWS는 JSON Web Signature, JWE는 JSON Web Encryption을 이릅니다. 놀랍게도, JWE는 데이터를 들여다볼 수 있는 당사자를 지정할 수 있습니다. 상술한 내용과 모순이지요? 분명히 JWT는 누구던지 decode해서 내용물을 확인할 수 있다고 말했었으니 말입니다. JWK는 JSON Web key의 약어로, hash function의 key를 JSON형태로 저장하는 곳입니다. 보통 public key를 가지고 있습니다(그러니까 asymmetric). JWS는 가장 흔한 형태의 JWT입니다. 아마 어떤 개발자는 JWS만 계속해서 사용해왔을 수도 있습니다. 우리가 흔히하는 header(JOSE header), payload, signature 구조가 JWS입니다. 누구나 decode해서 내용을 볼 수 있다는 말은 즉 정확히 말해 JWT가 아니라 JWS에 해당되는 말입니다. 그러나 대부분의 JWT 구현이 JWS이므로 누구나 내용을 볼 수 있다는 말이 널리 퍼지게 된 것입니다. 그런데 조금만 더 정확한 표현을 사용해봅시다. 사실 decode해서 내용을 볼 수 있다는 말은 사실입니다. 장난치는 것 처럼 보일 수도 있지만, 이는 철저히 용어의 문제입니다. 상술했듯, 우리가 jwt에서 얻을 수 있는 정보는 header와 payload에 집중되어있으며, 이는 encryption이 아니라 encode라고 언급한 바 있습니다. encode이기 때문에 decode이고, JWE는 encrypt이기 때문에 decode가 아니라 decrypt입니다. 그러므로 decode하면 항상 내용을 볼 수 있다는 표현은 어찌보면, 맞을 수도 있는겁니다.
 

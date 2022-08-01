@@ -87,7 +87,7 @@ const createSignature = (jwtB64Header, jwtB64Payload, secret) => {
   return signature;
 };
 // create your secret to sign the token
-const secret = crypto.randomBytes(32);
+const secret = crypto.randomBytes(32).toString();
 console.log('secret: ', secret);
 const signature = createSignature(jwtB64Header, jwtB64Payload, secret);
 console.log('the signature is: ', signature);

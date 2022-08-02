@@ -184,14 +184,3 @@ const signatureModified = original.modify(
 showAndCompare(withPayload, withoutPayload);
 showAndCompare(original, headerModified);
 showAndCompare(payloadModified, signatureModified);
-
-str = '4h';
-
-console.log(
-  str +
-    ': ' +
-    str.length +
-    ' characters, ' +
-    Buffer.byteLength(str, 'utf8') +
-    ' bytes'
-);

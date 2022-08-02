@@ -2,7 +2,6 @@
   "name": "nodejs_session",
   "version": "1.0.0",
   "description": "",
-  "main": "api작성법.js",
   "dependencies": {
     "accepts": "^1.3.8",
     "array-flatten": "^1.1.1",
